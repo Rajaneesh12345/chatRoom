@@ -1,78 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- Jquery -->
-    <script
-    src="https://code.jquery.com/jquery-3.4.1.js"
-    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-    crossorigin="anonymous"></script>
-    <!-- Socket.io -->
-    <script src="/socket.io/socket.io.js"></script>
-    <!-- Moustache.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.3/qs.min.js"></script>
-    <!-- CSS files -->
-    <link rel="stylesheet" href="./css/styles.css">
-    <!-- Images -->
-    <link rel="icon" href="./img/favicon.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat-Application</title>
-</head>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="stylesheet" href="./css/style.css" />
+		<title>Chat | ChatApp</title>
+	</head>
 
-<body>
-    <div class="chat">
-        <div id="sidebar" class="chat__sidebar">
-        </div> 
-        <div class="chat__main">
-            <div id="messages" class="chat__messages"></div>
-            <div class="compose">
-                <form id="message-form">
-                    <input type="text" name="message" required autofocus autocomplete="off">
-                    <button>Send</button>
-                </form>
-            <button id="send-location">Share Location</button>
+	<body class="chat">
+		<div class="chat__sidebar">
+			<h3>People</h3>
+			<div id="users"></div>
+		</div>
 
-            </div>
-        </div>
-    </div>
+		<div class="chat__main">
+			<ol id="messages" class="chat__messages"></ol>
 
-    <script id="message-template" type="html/text">
-        <div class="message >
-            <p>
-                <span class="message__name">{{username}}</span>
-                <span class="message__meta">{{createdAt}}</span>
-            </p>
-            <p>{{message}}</p>
-        </div>
-    </script>
+			<div class="chat__footer">
+				<form id="message-form">
+					<input
+						type="text"
+						name="message"
+						placeholder="Message"
+						autofocus
+						autocomplete="off"
+					/>
+					<button>Send</button>
+				</form>
+				<button id="send-location">Send location</button>
+			</div>
+		</div>
 
-    <script id="location-message-template" type="text/html">
-        <div class="message">
-            <p>
-                <span class="message__name">{{username}}</span>
-                <span class="message__meta">{{createdAt}}</span>
-            </p>
-            <p>
-                <a href="{{url}}" target='_blank'>My current location</a>
-            </p>
-        </div>
-    </script>
+		<script id="message-template" type="text/template">
+			<li class="message">
+			  <div class="message__title">
+			    <font color={{color}}>
+			      <h4>{{from}}</h4>
+			    </font>
+			    <span>{{createdAt}}</span>
+			  </div>
+			  <div class="message__body">
+			    <p>
+			      <font color={{color2}}>{{text}}</font>
+			    </p>
+			  </div>
+			</li>
+		</script>
 
-    <script id="sidebar-template" type="text/html">
-        <h2 class = "room-title">{{room}}</h2>
-        <h3 class = "list-title">Users</h3>
-        <ul class= "users">
-            {{#users}}
-                <li>{{username}}</li>
-            {{/users}}
-        </ul>
-    </script>
+		<script id="location-message-template" type="text/template">
+			<li class="message">
+			  <div class="message__title">
+			    <font color={{color}}>
+			      <h4>{{from}}</h4></font>
+			    <span>{{createdAt}}</span>
+			  </div>
+			  <div class="message__body">
+			    <p><a href="{{url}}" target="_blank">My current location</a></p>
+			  </div>
+			</li>
+		</script>
 
-    
-    <script src="./js/chat.js"></script>
-
-</body>
-
+		<script src="/socket.io/socket.io.js" charset="utf-8"></script>
+		<script src="/js/libs/jquery-3.2.1.min.js" charset="utf-8"></script>
+		<script src="/js/libs/moment.js" charset="utf-8"></script>
+		<script
+			src="/js/libs/moment-timezone-with-data.min.js"
+			charset="utf-8"
+		></script>
+		<script src="/js/libs/mustache.js" charset="utf-8"></script>
+		<script src="/js/libs/deparam.js" charset="utf-8"></script>
+		<script src="/js/chat.js"></script>
+	</body>
 </html>

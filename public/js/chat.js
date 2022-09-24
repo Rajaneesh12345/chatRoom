@@ -1,149 +1,120 @@
 var socket = io();
 
-//
-// ─── TEMPLATES ──────────────────────────────────────────────────────────────────
-//
+function scrollToBottom() {
+  // Selectors
+  var messages = jQuery('#messages');
+  var newMessage = messages.children('li:last-child');
+  // Height
+  var clientHeight = messages.prop('clientHeight');
+  var scrollTop = messages.prop('scrollTop');
+  var scrollHeight = messages.prop('scrollHeight');
+  var newMessageHeight = newMessage.innerHeight();
+  var lastMessageHeight = newMessage.prev().innerHeight();
 
-var messageTemplate = $('#message-template').html();
-var locationMessageTemplate = $('#location-message-template').html();
-var sidebarTemplate = $('#sidebar-template').html();
+  if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+    messages.scrollTop(scrollHeight);
+  }
+}
 
-//
-// ─── OPTIONS ────────────────────────────────────────────────────────────────────
-//
-//Take from the url
-var { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+socket.on('connect', function () {
+  var params = jQuery.deparam(window.location.search);
+  params.tz = moment.tz.guess();
 
-//
-// ─── AUTOSCROLL FUNCTION ────────────────────────────────────────────────────────
-//
-
-var autoscroll = () => {
-	const $messages = document.querySelector('#messages');
-	// New message element
-	const $newMessage = $messages.lastElementChild;
-
-	// Height of the new message
-	const newMessageStyles = getComputedStyle($newMessage);
-	const newMessageMargin = parseInt(newMessageStyles.marginBottom);
-	const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
-
-	// Visible height
-	const visibleHeight = $messages.offsetHeight;
-
-	// Height of messages container
-	const containerHeight = $messages.scrollHeight;
-
-	// How far have I scrolled?
-	const scrollOffset = $messages.scrollTop + visibleHeight;
-
-	if (containerHeight - newMessageHeight <= scrollOffset) {
-		$messages.scrollTop = $messages.scrollHeight;
-	}
-};
-
-//
-// ─── RECIEVE DATA FROM SERVER ───────────────────────────────────────────────────
-//
-
-//Location message
-socket.on('locationMessage', url => {
-	//Render the template as the message is recieved
-	var html = Mustache.render(locationMessageTemplate, {
-		username: url.username,
-		url: url.text,
-		createdAt: moment(url.createdAt).format('h:mm a'),
-	});
-	$('#messages').append(html);
-
-	autoscroll();
+  socket.emit('join', params, function (error) {
+    if (error) {
+      alert(error);
+      window.location.href = '/';
+    } else {
+      // console.log('No error');
+    }
+  });
 });
 
-// Normal message
-socket.on('message', message => {
-	//Render the template as the message is recieved
-	var html = Mustache.render(messageTemplate, {
-		username: message.username,
-		message: message.text,
-		createdAt: moment(message.createdAt).format('h:mm a'),
-	});
-	$('#messages').append(html);
-
-	autoscroll();
+socket.on('newMessage', function (message) {
+  var params = jQuery.deparam(window.location.search);
+  var color, color2;
+  if (message.from === 'Admin') {
+    color = 'SteelBlue';
+    color2 = 'SteelBlue';
+  } else if (message.from === params.name) {
+    color = 'Crimson';
+    color2 = 'SlateGray';
+  } else {
+    color = 'SlateGray';
+    color2 = 'SlateGray';
+  }
+  var dateObj = new Date(message.createdAt);
+  var formattedTime = moment(dateObj).format('h:mm a');
+  var template = jQuery('#message-template').html();
+  var html = Mustache.render(template, {
+    color: color,
+    color2: color2,
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime,
+  });
+  jQuery('#messages').append(html);
+  scrollToBottom();
 });
 
-//Getting room data on update
-socket.on('roomData', ({ room, users }) => {
-	var html = Mustache.render(sidebarTemplate, {
-		room,
-		users,
-	});
-
-	$('#sidebar').html(html);
-	// $('#sidebar').append(html);
+socket.on('newLocationMessage', function (message) {
+  var params = jQuery.deparam(window.location.search);
+  var color = message.from === params.name ? 'Crimson' : 'SlateGray';
+  var dateObj = new Date(message.createdAt);
+  var formattedTime = moment(dateObj).format('h:mm a');
+  var template = jQuery('#location-message-template').html();
+  var html = Mustache.render(template, {
+    color: color,
+    url: message.url,
+    from: message.from,
+    createdAt: formattedTime,
+  });
+  jQuery('#messages').append(html);
+  scrollToBottom();
 });
 
-//
-// ─────────────────────────────────────────────────────── DATA TO THE SERVER ─────
-//
+socket.on('updateUserList', function (users) {
+  var params = jQuery.deparam(window.location.search);
+  var ol = jQuery('<ul></ul>');
 
-//
-// ─── PRINTING MESSAGE ───────────────────────────────────────────────────────────
-//
-
-$('#message-form').submit(function (e) {
-	e.preventDefault();
-	var message = $('input[name=message]').val();
-
-	// Sending data to the server
-	socket.emit('sendMessage', message, error => {
-		//If error is there
-		if (error) {
-			return console.log(error);
-		}
-
-		//Success
-		console.log('Message has been delivered!');
-	});
-
-	$('input[name=message]').val('');
-	$('input[name=message').focus();
+  users.forEach(function (user) {
+    var color = user === params.name ? 'Crimson' : 'SlateGray';
+    ol.append(jQuery('<li></li>').text(user).css({'color': color}));
+  });
+  jQuery('#users').html(ol);
 });
 
-//
-// ─── SHARE THE LOCATION ─────────────────────────────────────────────────────────
-//
-
-$('#send-location').click(function (e) {
-	e.preventDefault();
-	if (!navigator.geolocation) {
-		return alert('Geolocation is not supported in your browser!');
-	}
-
-	//disable
-	$('#send-location').attr('disabled', 'disabled');
-
-	navigator.geolocation.getCurrentPosition(position => {
-		var location = {
-			lat: position.coords.latitude,
-			long: position.coords.longitude,
-		};
-		socket.emit('sendLocation', location, status => {
-			console.log(status);
-		});
-	});
-
-	//enable
-	$('#send-location').removeAttr('disabled');
+socket.on('disconnect', function () {
+  console.log('Disconnected from server');
 });
 
-//
-// ─── SHARING THE USERNAME AND ROOMNAME ──────────────────────────────────────────
-//
+jQuery('#message-form').on('submit', function (e) {
+  e.preventDefault();
+  var messageTextbox = jQuery('[name=message]');
 
-socket.emit('join', { username, room }, error => {
-	if (error) {
-		alert(error);
-		location.href = '/';
-	}
+  socket.emit('createMessage', {
+    text: messageTextbox.val(),
+  }, function () {
+    messageTextbox.val('');
+  });
+});
+
+var locationButton = jQuery('#send-location');
+locationButton.on('click', function () {
+  if (!navigator.geolocation) {
+    return alert('Geolocation not supported by your browser');
+  }
+
+  locationButton.attr('disabled', 'disabled').text('Sending location...');
+
+  navigator.geolocation.getCurrentPosition(function (position) {
+    locationButton.removeAttr('disabled').text('Send location');
+    socket.emit('createLocationMessage', {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    });
+  }, function () {
+    locationButton.removeAttr('disabled').text('Send location');
+    alert('Unable to fetch location.');
+  });
 });

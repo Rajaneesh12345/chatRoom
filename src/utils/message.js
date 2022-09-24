@@ -1,26 +1,24 @@
-//
-// ─── MESSAGE FOR TEXT ───────────────────────────────────────────────────────────
-//
+const moment = require('moment');
 
-var generateMessage = (username, text) => {
+const generateMessage = (from, text) => {
     return {
-        username,
-        text,
-        createdAt: new Date().getTime()
-    }
-}
+      from,
+      text,
+      createdAt: moment().valueOf(),
+    };
+  };
 
 //
 // ─── MESSAGE FOR LOCATION ───────────────────────────────────────────────────────
 //
 
-var generateLocationMessage = (username, url) => {
-    return{
-        username, 
-        url,
-        createdAt: new Date().getTime()
-    }
-}
+const generateLocationMessage = (from, latitude, longitude, time) => {
+    return {
+      from,
+      url: `https://www.google.com/maps?q=${latitude},${longitude}`,
+      createdAt: time || moment().valueOf(),
+    };
+  };
 
 // ────────────────────────────────────────────────────────────────────────────────
 
