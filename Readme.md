@@ -33,13 +33,28 @@ Follow the instructions below to set up the environment and run this project on 
 > npm install
 ```
 
+3. Create a config.json to securely store credentials inside \server\config
+
+```
+{
+  "test": {
+    "PORT": "3000",
+    "MONGODB_URI": "mongodb://localhost:27017/APPNAME1"
+  },
+  "development": {
+    "PORT": "3000",
+    "MONGODB_URI": "mongodb://localhost:27017/APPNAME2"
+  }
+}
+```
+
 5.  Back to the root directory and type the below command to start the server and the service
 
 ```
-> npm run dev
+> npm run dev-watch
 ```
 
-6.  See it up and running on  [http://localhost:8000](http://localhost:8000/)
+6.  See it up and running on  [http://localhost:3000](http://localhost:3000/)
 
 ## [](https://github.com/rubychi/udemy-chatapp#deployment)Deployment
 
@@ -50,7 +65,14 @@ Follow the instructions below to set up the environment and run this project on 
 > git push heroku master
 ```
 
-2.  Open the app in the browser
+2. Set up config variables
+
+```
+> heroku config:set
+  MONGODB_URI=[Your MongoDB URI]
+```
+
+3.  Open the app in the browser
 
 ```
 > heroku open
