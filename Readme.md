@@ -48,13 +48,13 @@ Follow the instructions below to set up the environment and run this project on 
 }
 ```
 
-5.  Back to the root directory and type the below command to start the server and the service
+4.  Back to the root directory and type the below command to start the server and the service
 
 ```
 > npm run dev-watch
 ```
 
-6.  See it up and running on  [http://localhost:3000](http://localhost:3000/)
+5.  See it up and running on  [http://localhost:3000](http://localhost:3000/)
 
 ## [](https://github.com/rubychi/udemy-chatapp#deployment)Deployment
 
