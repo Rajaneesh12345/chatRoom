@@ -11,7 +11,7 @@
 -   Responsive web design (RWD)
 
 
-## [](https://github.com/Rajaneesh12345/chatRoom)Getting Started
+## [](https://github.com/rubychi/udemy-chatapp#getting-started)Getting Started
 
 Follow the instructions below to set up the environment and run this project on your local machine
 
