@@ -100,28 +100,6 @@ Follow the instructions below to set up the environment and run this project on 
 -   moment
 
 
-##  Notes
-
--   Send an event to everybody in the room 'The Office Fans'
-
-```
-io.emit -> io.to('The Office Fans').emit
-
-```
-
--   Send an event to everybody in the room 'The Office Fans' except for the current user
-
-```
-socket.broadcast.emit -> socket.broadcast.to('The Office Fans').emit
-
-```
-
--   Send an event to a specific user
-
-```
-socket.emit
-```
-
 ## Authors
 
 - [Rajaneesh Gudivada](https://github.com/Rajaneesh12345)
