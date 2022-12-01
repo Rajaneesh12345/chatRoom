@@ -54,29 +54,7 @@ Follow the instructions below to set up the environment and run this project on 
 > npm run dev-watch
 ```
 
-5.  See it up and running on  [http://localhost:3000](http://localhost:3000/)
-
-## [](https://github.com/rubychi/udemy-chatapp#deployment)Deployment
-
-1.  Deploy to Heroku
-
-```
-> heroku create
-> git push heroku master
-```
-
-2. Set up config variables
-
-```
-> heroku config:set
-  MONGODB_URI=[Your MongoDB URI]
-```
-
-3.  Open the app in the browser
-
-```
-> heroku open
-```
+5. Run and see at [http://localhost:3000](http://localhost:3000/)
 
 
 
