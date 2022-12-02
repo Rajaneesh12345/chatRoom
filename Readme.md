@@ -55,29 +55,3 @@ Follow the instructions below to set up the environment and run this project on 
 ```
 
 5. Run and see at [http://localhost:3000](http://localhost:3000/)
-
-
-
-## [](https://github.com/rubychi/udemy-chatapp#built-with)Built With
-
-### [](https://github.com/rubychi/udemy-chatapp#frontend)Frontend
-
--   jquery
--   mustache
-
-### [](https://github.com/rubychi/udemy-chatapp#backend)Backend
-
--   express
--  NodeJS
--   compression
--   helmet
-
-### [](https://github.com/rubychi/udemy-chatapp#utils)Utils
-
--   socket.io
--   moment
-
-
-## Authors
-
-- [Rajaneesh Gudivada](https://github.com/Rajaneesh12345)
